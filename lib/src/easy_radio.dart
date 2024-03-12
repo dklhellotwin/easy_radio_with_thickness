@@ -46,6 +46,7 @@ class EasyRadio<T> extends StatefulWidget {
   /// The [dotStyle] parameter is optional and represents the style of the dot inside the radio button.
   /// The [shape] parameter is optional and represents the shape of the radio button.
   /// The [toggleable] parameter is optional and determines whether the radio button can be toggled between selected and unselected states.
+  /// The [lineThickness] parameter is optional and represents the thickness of radio button lines.
 
   const EasyRadio({
     super.key,
@@ -63,6 +64,7 @@ class EasyRadio<T> extends StatefulWidget {
     this.dotStyle = const DotStyle.circle(),
     this.shape = const RadioShape.circle(),
     this.toggleable = false,
+    this.lineThickness = 2.0,
   });
 
   /// The value represented by this radio button.
@@ -108,6 +110,9 @@ class EasyRadio<T> extends StatefulWidget {
 
   /// Determines whether the radio button can be toggled between selected and unselected states.
   final bool toggleable;
+
+  /// The thickness of radio button lines.
+  final double lineThickness;
 
   bool get _selected => value == groupValue;
 
@@ -178,7 +183,8 @@ class _EasyRadioState<T> extends State<EasyRadio<T>>
           ..activeFillColor = widget.activeFillColor
           ..animateFillColor = widget.animateFillColor
           ..dotStyle = widget.dotStyle
-          ..shape = widget.shape,
+          ..shape = widget.shape
+          ..lineThickness = widget.lineThickness,
       ),
     );
   }
@@ -267,6 +273,15 @@ class _CustomRadioPainter extends ToggleablePainter {
     _shape = shape;
   }
 
+  /// Sets the thickness of the radio button lines.
+  ///
+  /// The line thickness determines the thickness of the radio button lines.
+  /// The default line thickness is 2.0.
+  ///
+  set lineThickness(double lineThickness) {
+    _lineThickness = lineThickness;
+  }
+
   Color? _dotColor;
 
   Color? _activeFillColor;
@@ -283,6 +298,8 @@ class _CustomRadioPainter extends ToggleablePainter {
 
   RadioShape _shape = const RadioShape.circle();
 
+  double _lineThickness = 2.0;
+
   @override
   void paint(Canvas canvas, Size size) {
     paintRadialReaction(canvas: canvas, origin: size.center(Offset.zero));
@@ -292,7 +309,7 @@ class _CustomRadioPainter extends ToggleablePainter {
     final Paint paint = Paint()
       ..color = Color.lerp(inactiveColor, activeColor, position.value)!
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 2.0;
+      ..strokeWidth = _lineThickness;
     _shape.when(
       circle: () {
         _drawOuterCircleShape(center, canvas, paint);
@@ -384,7 +401,7 @@ class _CustomRadioPainter extends ToggleablePainter {
           },
           check: (strokeCap) {
             paint.style = PaintingStyle.stroke;
-            paint.strokeWidth = 2.0;
+            paint.strokeWidth = _lineThickness;
             paint.strokeCap = strokeCap;
             _drawAnimatedCheck(center, canvas, paint);
           },
